@@ -1,9 +1,6 @@
 package com.web.jobportal.entity;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.List;
 
@@ -11,6 +8,8 @@ import java.util.List;
 @Table(name="users_type")
 public class UserType {
 
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
     private int userTypeId;
 
     private String userTypeName;
