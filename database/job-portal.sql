@@ -41,15 +41,15 @@ CREATE TABLE job_location (
 
 CREATE TABLE job_seeker_profile (
 	user_account_id INT NOT NULL,
-    city VARCHAR(255) NOT NULL,
-    country VARCHAR(255) NOT NULL,
-    employment_type VARCHAR(255) NOT NULL,
-    first_name VARCHAR(255) NOT NULL,
-    last_name VARCHAR(255) NOT NULL,
-    profile_photo VARCHAR(255) NOT NULL,
-    seeker_resume VARCHAR(255) NOT NULL,
-    state VARCHAR(255) NOT NULL,
-    work_authorization VARCHAR(255) NOT NULL,
+    city VARCHAR(255) NULL,
+    country VARCHAR(255) NULL,
+    employment_type VARCHAR(255) NULL,
+    first_name VARCHAR(255) NULL,
+    last_name VARCHAR(255) NULL,
+    profile_photo VARCHAR(255) NULL,
+    seeker_resume VARCHAR(255)  NULL,
+    state VARCHAR(255) NULL,
+    work_authorization VARCHAR(255) NULL,
     PRIMARY KEY (user_account_id),
 	CONSTRAINT Fk_UserAccountId_1 Foreign Key (user_account_id) REFERENCES users (user_id)
 );
