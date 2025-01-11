@@ -34,6 +34,15 @@ public class User {
     public User() {
     }
 
+    public User(int userId, String email, boolean isActive, String password, Date registrationDate, UserType userTypeId) {
+        this.userId = userId;
+        this.email = email;
+        this.isActive = isActive;
+        this.password = password;
+        this.registrationDate = registrationDate;
+        this.userTypeId = userTypeId;
+    }
+
     public int getUserId() {
         return userId;
     }
