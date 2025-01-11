@@ -7,6 +7,12 @@ import com.web.jobportal.repository.JobSeekerProfileRepository;
 import com.web.jobportal.repository.RecruiterProfileRepository;
 import com.web.jobportal.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -18,17 +24,20 @@ public class UserService {
     private UserRepository userRepository;
     private RecruiterProfileRepository recruiterProfileRepository;
     private JobSeekerProfileRepository jobSeekerProfileRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, RecruiterProfileRepository recruiterProfileRepository, JobSeekerProfileRepository jobSeekerProfileRepository) {
+    public UserService(UserRepository userRepository, RecruiterProfileRepository recruiterProfileRepository, JobSeekerProfileRepository jobSeekerProfileRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.recruiterProfileRepository = recruiterProfileRepository;
         this.jobSeekerProfileRepository = jobSeekerProfileRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User addNew(User user) {
         user.setActive(true);
         user.setRegistrationDate(new Date(System.currentTimeMillis()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         int userTypeId = user.getUserTypeId().getUserTypeId();
         User savedUser = userRepository.save(user);
         if(userTypeId == 1) {
@@ -41,5 +50,23 @@ public class UserService {
 
     public Optional<User> getUserByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    public Object getCurrentUserProfile() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String username = authentication.getName();
+            User user = userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("Couldn't find user with name: " + username));
+            int userId = user.getUserId();
+            if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("Recruiter"))) {
+                System.out.println("OVER HERE");
+                return recruiterProfileRepository.findById(userId).orElse(new RecruiterProfile());
+            } else {
+                System.out.println("OVER HERE 2");
+                return jobSeekerProfileRepository.findById(userId).orElse(new JobSeekerProfile());
+            }
+        }
+        System.out.println("OVER HERE 3");
+        return null;
     }
 }
