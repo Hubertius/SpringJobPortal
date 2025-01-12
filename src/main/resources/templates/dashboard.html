@@ -71,6 +71,15 @@
             </li>
 
         </ul>
+
+        <img
+                class="rounded-circle me-3"
+                height="50px"
+                width="50x"
+                th:if="${userProfile.photosImagePath!=null}"
+                th:src="@{${userProfile?.photosImagePath}}"
+        />
+
         <label th:if="${userProfile.firstName != null && userProfile.lastName != null}"
                th:text="${userProfile.firstName+' '+userProfile.lastName}"
                class="nav-item nav-link px-2 me-3">
