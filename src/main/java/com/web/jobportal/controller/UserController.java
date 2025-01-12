@@ -40,7 +40,7 @@ public class UserController {
     public String userRegistration(User user, Model model) {
         if(userService.getUserByEmail(user.getEmail()).isEmpty()) {
             userService.addNew(user);
-            return "dashboard";
+            return "redirect:/dashboard";
         } else {
             List<UserType> userTypes = userTypeService.getAll();
             model.addAttribute("getAllTypes", userTypes);
