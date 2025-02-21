@@ -21,9 +21,9 @@ import java.util.Optional;
 @Service
 public class UserService {
 
-    private UserRepository userRepository;
-    private RecruiterProfileRepository recruiterProfileRepository;
-    private JobSeekerProfileRepository jobSeekerProfileRepository;
+    private final UserRepository userRepository;
+    private final RecruiterProfileRepository recruiterProfileRepository;
+    private final JobSeekerProfileRepository jobSeekerProfileRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -67,6 +67,16 @@ public class UserService {
             }
         }
         System.out.println("OVER HERE 3");
+        return null;
+    }
+
+    public User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(!(authentication instanceof AnonymousAuthenticationToken)) {
+            String username = authentication.getName();
+            User user = userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("Couldn't find user with name: " + username));
+            return user;
+        }
         return null;
     }
 }
